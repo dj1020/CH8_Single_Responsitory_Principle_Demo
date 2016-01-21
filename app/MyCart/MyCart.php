@@ -9,9 +9,15 @@ namespace App\MyCart;
 
 class MyCart
 {
+    private $list;
 
     public function add($product)
     {
-        
+        $this->list[] = $product;
+    }
+
+    public function getList()
+    {
+        return $this->list;
     }
 }

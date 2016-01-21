@@ -28,4 +28,5 @@ Route::get('/', function () {
 
 Route::group(['middleware' => ['web']], function () {
     Route::get('/checkout', 'CheckoutController@index');
+    Route::post('/checkout', 'CheckoutController@checkout');
 });
