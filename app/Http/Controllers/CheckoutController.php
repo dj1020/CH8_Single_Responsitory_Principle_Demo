@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\MyCart\Account;
+use App\MyCart\Billers\CreditCardBiller;
 use App\MyCart\MyCart;
 use App\MyCart\Order;
+use App\MyCart\Processors\OrderProcessor;
 use App\MyCart\Product;
 use Illuminate\Http\Request;
 
@@ -20,6 +22,7 @@ class CheckoutController extends Controller
     {
         // 建立客戶 Account
         $account = Account::updateOrCreate(['id' => 1], ['name' => "梅宗主"]);
+        $account->save();
 
         // 模擬加入購物車動作
         $cart = new MyCart();
@@ -44,6 +47,9 @@ class CheckoutController extends Controller
         $orderProcessor = new OrderProcessor(new CreditCardBiller());
         $orderId = $orderProcessor->process($order);
 
-        return "<h1>Done, Order ID: " . $orderId . "</h1>";
+        return
+            "<h2>Done, 訂單 ID: " . $orderId . "</h2>" .
+            "<h2>{$order->getAccount()->name}</h2>" .
+            "<h2>{$order->getAmount()}</h2>";
     }
 }
