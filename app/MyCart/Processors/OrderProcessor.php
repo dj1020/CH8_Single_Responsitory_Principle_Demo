@@ -9,23 +9,27 @@ namespace App\MyCart\Processors;
 
 use App\MyCart\Billers\BillerInterface;
 use App\MyCart\Order;
+use App\MyCart\Repository\OrderRepository;
 use Carbon\Carbon;
 use DB;
 use Exception;
 
 class OrderProcessor
 {
+    protected $orders;
+
     /**
      * OrderProcessor constructor.
      */
-    public function __construct(BillerInterface $biller)
+    public function __construct(BillerInterface $biller, OrderRepository $orders)
     {
         $this->biller = $biller;
+        $this->orders = $orders;
     }
 
     public function process(Order $order)
     {
-        $recent = $this->getRecentOrderCount($order);
+        $recent = $this->orders->getRecentOrderCount($order);
 
         if ($recent > 0) {
             throw new Exception('Duplicate order likely.');
@@ -40,15 +44,5 @@ class OrderProcessor
         ));
 
         return $id;
-    }
-
-    private function getRecentOrderCount(Order $order)
-    {
-        $timestamps = Carbon::now()->subMinutes(3);
-
-        return DB::table('orders')
-            ->where('account', $order->getAccount()->id)
-            ->where('created_at', '>=', $timestamps)
-            ->count();
     }
 }

@@ -8,6 +8,7 @@ use App\MyCart\MyCart;
 use App\MyCart\Order;
 use App\MyCart\Processors\OrderProcessor;
 use App\MyCart\Product;
+use App\MyCart\Repository\OrderRepository;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -44,7 +45,10 @@ class CheckoutController extends Controller
         $order->setAccount($request->get('account_id'));
 
         // 處理訂單
-        $orderProcessor = new OrderProcessor(new CreditCardBiller());
+        $orderProcessor = new OrderProcessor(
+            new CreditCardBiller(),
+            new OrderRepository()
+        );
 
         echo "<h4>訂單處理中...</h4>";
         $orderId = $orderProcessor->process($order);
