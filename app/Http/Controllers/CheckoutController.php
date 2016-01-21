@@ -19,13 +19,11 @@ class CheckoutController extends Controller
     public function index()
     {
         // 建立客戶 Account
-        $account = Account::findOrNew(1);
-        $account->name = "梅宗主";
-        $account->save();
+        $account = Account::updateOrCreate(['id' => 1], ['name' => "梅宗主"]);
 
         // 模擬加入購物車動作
-        $cart = new MyCart($account);
-        $cart->add(Product::updateOrCreate(['id' => 1], ['name' => '飛鴿', 'price' => '4000']));
+        $cart = new MyCart();
+        $cart->add(Product::updateOrCreate(['id' => 1], ['name' => '暖爐', 'price' => '4000']));
         $cart->add(Product::updateOrCreate(['id' => 2], ['name' => '護心丹', 'price' => '12000']));
         $cart->add(Product::updateOrCreate(['id' => 3], ['name' => '密道鐵門', 'price' => '8000']));
 
@@ -37,6 +35,15 @@ class CheckoutController extends Controller
 
     public function checkout(Request $request)
     {
-        return $request->all();
+        // 建立訂單
+        $order = new Order();
+        $order->setProducts($request->get('product_ids'));
+        $order->setAccount($request->get('account_id'));
+
+        // 處理訂單
+        $orderProcessor = new OrderProcessor(new CreditCardBiller());
+        $orderId = $orderProcessor->process($order);
+
+        return "<h1>Done, Order ID: " . $orderId . "</h1>";
     }
 }
