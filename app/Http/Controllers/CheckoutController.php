@@ -45,6 +45,8 @@ class CheckoutController extends Controller
 
         // 處理訂單
         $orderProcessor = new OrderProcessor(new CreditCardBiller());
+
+        echo "<h4>訂單處理中...</h4>";
         $orderId = $orderProcessor->process($order);
 
         return

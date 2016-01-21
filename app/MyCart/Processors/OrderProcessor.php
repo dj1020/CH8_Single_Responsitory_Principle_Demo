@@ -25,8 +25,6 @@ class OrderProcessor
 
     public function process(Order $order)
     {
-        echo "<h4>訂單處理中...</h4>";
-
         $recent = $this->getRecentOrderCount($order);
 
         if ($recent > 0) {
