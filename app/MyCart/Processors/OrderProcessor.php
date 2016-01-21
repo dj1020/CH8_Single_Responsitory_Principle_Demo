@@ -29,9 +29,7 @@ class OrderProcessor
 
     public function process(Order $order)
     {
-        $recent = $this->orders->getRecentOrderCount($order);
-
-        if ($recent > 0) {
+        if ($this->isDuplicateOrder($order)) {
             throw new Exception('Duplicate order likely.');
         }
 
@@ -44,5 +42,16 @@ class OrderProcessor
         ));
 
         return $id;
+    }
+
+    /**
+     * @param $recent
+     * @return bool
+     */
+    private function isDuplicateOrder($order)
+    {
+        $recent = $this->orders->getRecentOrderCount($order);
+
+        return $recent > 0;
     }
 }
