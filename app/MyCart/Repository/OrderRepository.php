@@ -22,4 +22,15 @@ class OrderRepository
             ->where('created_at', '>=', $timestamps)
             ->count();
     }
+
+    public function logOrder(Order $order)
+    {
+        $id = DB::table('orders')->insertGetId(array(
+            'account'    => $order->getAccount()->id,
+            'amount'     => $order->getAmount(),
+            'created_at' => Carbon::now()
+        ));
+
+        return $id;
+    }
 }

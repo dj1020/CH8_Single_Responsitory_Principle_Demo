@@ -35,11 +35,7 @@ class OrderProcessor
 
         $this->biller->bill($order->getAccount()->id, $order->getAmount());
 
-        $id = DB::table('orders')->insertGetId(array(
-            'account'    => $order->getAccount()->id,
-            'amount'     => $order->getAmount(),
-            'created_at' => Carbon::now()
-        ));
+        $id = $this->orders->logOrder($order);
 
         return $id;
     }
